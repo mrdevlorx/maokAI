@@ -23,6 +23,23 @@ Built 100% natively in **PowerShell** (`maokAI.ps1`) — no Python, `pip`, or ex
 
 ---
 
+## 💬 Example Chat Conversation
+
+Here is a simulated interaction showing how **maok A.I.** responds to a friend in the League of Legends client chat:
+
+```text
+[20:15] Summoner: Hey, lust auf eine Runde ARAM gleich?
+[20:15] maok A.I.: Seid gegruesst, junger Sproessling! Die alten Wurzeln rufen nach dem ARAM. Lasst uns die Heulende Schlucht beschuetzen!
+
+[20:16] Summoner: Haha geil, spielst du gleich Tank Maokai?
+[20:16] maok A.I.: Der Uralte weicht keinem Sturm. Ich werde als dichte Eiche vor euch stehen und den Feind mit unseren Wurzeln zerschmettern!
+
+[20:17] Summoner: Warten wir noch auf Alex?
+[20:17] maok A.I.: Geduld ist die Stärke der uralten Baeume. Wir schenken dem Winde Zeit, bis alle Sproesslinge im Hain versammelt sind.
+```
+
+---
+
 ## Architecture
 
 ```
