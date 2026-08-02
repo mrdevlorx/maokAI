@@ -1,18 +1,19 @@
 # maok A.I.
 
-Lightweight connector that bridges the **Riot Client (League of Legends)** LCU chat system to any **OpenAI-compatible LLM** endpoint. Listens for incoming chat messages over the local LCU WebSocket / REST API, generates an in-character reply via the LLM, and posts it back into the conversation.
+Lightweight Windows PowerShell script that bridges the **Riot Client (League of Legends)** LCU chat system to any **OpenAI-compatible LLM** endpoint. Listens for incoming chat messages via the local LCU REST API, resolves sender identity & live game stats, generates an in-character reply via the LLM, and posts it back into the conversation.
 
-Available in both **Python** (`maokAI_bot.py`) and **PowerShell** (`maokAI.ps1`).
+Built 100% natively in **PowerShell** (`maokAI.ps1`) — no Python, `pip`, or external package installation required.
 
 ---
 
 ## Features
 
+- **Zero External Dependencies** — written purely in Windows PowerShell using native .NET classes (`System.Net.WebClient`).
 - **LCU Auto-Discovery** — reads dynamic HTTPS port and auth token from `lockfile`, `scope_v3.json`, or running `RiotClientUx.exe` process args.
-- **Dual Runtime Support** — includes both a Python edition (WebSocket-driven) and a native Windows PowerShell edition (`maokAI.ps1`).
+- **Live Identity & Stats Resolution** — looks up friend rank, level, and champion status in real-time.
 - **OpenAI API Standard** — talks to any server exposing `/v1/chat/completions` (LM Studio, vLLM, Ollama, OpenAI, etc.).
 - **Persona Enforcement** — system prompt keeps replies concise and in character (maok A.I.).
-- **Anti-Spam Controls** — 1 s per-chat cooldown + 15 messages / 10 s global cap.
+- **Anti-Spam Controls** — per-chat cooldown + 15 messages / 10 s global cap.
 
 ---
 
@@ -23,14 +24,14 @@ Available in both **Python** (`maokAI_bot.py`) and **PowerShell** (`maokAI.ps1`)
 |                                 RIOT CLIENT                                       |
 |  (lockfile + scope_v3.json + RiotClientUx.exe process args)                       |
 +----------------------------------------+------------------------------------------+
-                                         | (WebSocket / REST API, basic auth "riot:<token>")
+                                         | (REST API, basic auth "riot:<token>")
                                          v
 +-----------------------------------------------------------------------------------+
-|                              MAOKAI_BOT.PY / MAOKAI.PS1                           |
+|                                    MAOKAI.PS1                                     |
 |                                                                                   |
 |  1. Auto-discovers LCU port & auth token (env > lockfile > process args)          |
-|  2. Subscribes to chat events / polls messages                                    |
-|  3. Formats persona prompt + history, POSTs to LLM /chat/completions              |
+|  2. Polls messages & resolves sender rank/level stats                             |
+|  3. Formats persona prompt + stats, POSTs to LLM /chat/completions                |
 |  4. Rate-limits and sends response back via LCU REST                              |
 +----------------------------------------+------------------------------------------+
                                          | (HTTP POST /v1/chat/completions)
@@ -43,22 +44,9 @@ Available in both **Python** (`maokAI_bot.py`) and **PowerShell** (`maokAI.ps1`)
 
 ---
 
-## Usage
+## Quickstart
 
-### Python Version (`maokAI_bot.py`)
-
-1. Install requirements:
-   ```bash
-   pip install -r requirements.txt
-   ```
-2. Run:
-   ```bash
-   python maokAI_bot.py
-   ```
-
-### PowerShell Version (`maokAI.ps1`)
-
-No Python installation required! Run directly in Windows PowerShell:
+Run directly in Windows PowerShell (no setup required):
 
 ```powershell
 Set-ExecutionPolicy -Scope Process Bypass
@@ -69,7 +57,7 @@ Set-ExecutionPolicy -Scope Process Bypass
 
 ## Configuration
 
-All configuration is via environment variables or directly at the top of either script (`maokAI_bot.py` or `maokAI.ps1`).
+All configuration is via environment variables or directly at the top of `maokAI.ps1`.
 
 | Variable                  | Default                     | Description                                              |
 |---------------------------|-----------------------------|---------------------------------------------------------|
@@ -85,9 +73,8 @@ All configuration is via environment variables or directly at the top of either 
 
 ```
 maokAI/
-├── maokAI_bot.py       # Python version (WebSocket + REST)
-├── maokAI.ps1          # PowerShell version (Native Windows PowerShell)
-├── requirements.txt    # Python dependencies
+├── maokAI.ps1          # PowerShell bot script
+├── .gitignore          # Git ignore rules
 └── README.md           # Documentation
 ```
 
