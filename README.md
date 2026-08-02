@@ -2,7 +2,7 @@
 
 > ⚠️ **DISCLAIMER & TOS NOTICE:** This bot relies exclusively on Riot's own internal client APIs (LCU API). However, automated chat interaction may violate Riot Games' Terms of Service (ToS). Use strictly at your own risk — the author assumes no responsibility for any banned or restricted accounts.
 
-Lightweight Windows PowerShell script that bridges the **Riot Client (League of Legends)** LCU chat system to any **OpenAI-compatible LLM** endpoint. Listens for incoming chat messages via the local LCU REST API, resolves sender identity & live game stats, generates an in-character reply via the LLM, and posts it back into the conversation.
+Lightweight Windows PowerShell script that bridges the **Riot Client (League of Legends)** LCU chat system to any **OpenAI-compatible LLM** endpoint. Listens for incoming chat messages via the local LCU REST API, resolves sender identity, generates an in-character reply via the LLM, and posts it back into the conversation.
 
 Built 100% natively in **PowerShell** (`maokAI.ps1`) — no Python, `pip`, or external package installation required.
 
@@ -12,7 +12,7 @@ Built 100% natively in **PowerShell** (`maokAI.ps1`) — no Python, `pip`, or ex
 
 - **Zero External Dependencies** — written purely in Windows PowerShell using native .NET classes (`System.Net.WebClient`).
 - **LCU Auto-Discovery** — reads dynamic HTTPS port and auth token from `lockfile`, `scope_v3.json`, or running `RiotClientUx.exe` process args.
-- **Live Identity & Stats Resolution** — looks up friend rank, level, and champion status in real-time.
+- **Sender Identity Resolution** — looks up friend name and tag in real-time.
 - **OpenAI API Standard** — talks to any server exposing `/v1/chat/completions` (LM Studio, vLLM, Ollama, OpenAI, etc.).
 - **Persona Enforcement** — system prompt keeps replies concise and in character (maok A.I.).
 - **Anti-Spam Controls** — per-chat cooldown + 15 messages / 10 s global cap.
@@ -32,8 +32,8 @@ Built 100% natively in **PowerShell** (`maokAI.ps1`) — no Python, `pip`, or ex
 |                                    MAOKAI.PS1                                     |
 |                                                                                   |
 |  1. Auto-discovers LCU port & auth token (env > lockfile > process args)          |
-|  2. Polls messages & resolves sender rank/level stats                             |
-|  3. Formats persona prompt + stats, POSTs to LLM /chat/completions                |
+|  2. Polls messages & resolves sender identity                                     |
+|  3. Formats persona prompt + history, POSTs to LLM /chat/completions              |
 |  4. Rate-limits and sends response back via LCU REST                              |
 +----------------------------------------+------------------------------------------+
                                          | (HTTP POST /v1/chat/completions)
@@ -77,6 +77,7 @@ All configuration is via environment variables or directly at the top of `maokAI
 maokAI/
 ├── maokAI.ps1          # PowerShell bot script
 ├── .gitignore          # Git ignore rules
+├── LICENSE             # MIT License
 └── README.md           # Documentation
 ```
 
