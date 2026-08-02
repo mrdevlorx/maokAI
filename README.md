@@ -23,9 +23,11 @@ Built 100% natively in **PowerShell** (`maokAI.ps1`) — no Python, `pip`, or ex
 
 ---
 
-## 💬 Example Chat Conversation
+## 💬 Animated Chat Preview
 
-Here is a simulated interaction showing how **maok A.I.** responds to a friend in the League of Legends client chat:
+<p align="center">
+  <img src="assets/chat_demo.gif" alt="maok A.I. Animated Chat Demo" width="680" style="border-radius: 8px; border: 1px solid #c8aa6e;" />
+</p>
 
 ```text
 [20:15] Summoner: Hey, lust auf eine Runde ARAM gleich?
@@ -121,6 +123,7 @@ All configuration is via environment variables or directly at the top of `maokAI
 ```
 maokAI/
 ├── assets/
+│   ├── chat_demo.gif   # Animated League Chat Preview
 │   └── mascot.jpg      # maok A.I. Mascot Logo
 ├── maokAI.ps1          # PowerShell bot script
 ├── .gitignore          # Git ignore rules
