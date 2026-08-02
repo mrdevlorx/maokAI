@@ -1,5 +1,7 @@
 # maok A.I.
 
+> ⚠️ **DISCLAIMER & TOS NOTICE:** This bot relies exclusively on Riot's own internal client APIs (LCU API). However, automated chat interaction may violate Riot Games' Terms of Service (ToS). Use strictly at your own risk — the author assumes no responsibility for any banned or restricted accounts.
+
 Lightweight Windows PowerShell script that bridges the **Riot Client (League of Legends)** LCU chat system to any **OpenAI-compatible LLM** endpoint. Listens for incoming chat messages via the local LCU REST API, resolves sender identity & live game stats, generates an in-character reply via the LLM, and posts it back into the conversation.
 
 Built 100% natively in **PowerShell** (`maokAI.ps1`) — no Python, `pip`, or external package installation required.
