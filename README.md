@@ -8,7 +8,7 @@
 
 Ever wondered what would happen if **Maokai, the Twisted Treant**, took over your League of Legends chat? 🌲
 
-**maok A.I.** connects your local **Riot Client** to a local AI model (such as LM Studio, Ollama, or vLLM). Whenever your League friends send you a chat message, **maok A.I.** intercepts it in real-time and responds directly as Maokai — wise, ancient, and protective of the forest!
+**maok A.I.** connects your local **Riot Client** to any AI model — including **LM Studio, Ollama, vLLM**, or the official **OpenAI API (GPT-4o)**. Whenever your League friends send you a chat message, **maok A.I.** intercepts it in real-time and responds directly as Maokai — wise, ancient, and protective of the forest!
 
 Built 100% natively in **Windows PowerShell** (`maokAI.ps1`) — no Python, `pip`, or external package installation required!
 
@@ -38,8 +38,53 @@ Built 100% natively in **Windows PowerShell** (`maokAI.ps1`) — no Python, `pip
 - 🎮 **Made for League Players** — turns your League client chat into an in-character AI bot for your friends!
 - ⚡ **Zero Setup & Dependencies** — runs natively in Windows PowerShell using built-in Windows .NET features.
 - 🔍 **Automatic Client Detection** — automatically finds your running Riot Client, HTTPS port, and auth credentials.
-- 🤖 **OpenAI API Compatible** — works with LM Studio, Ollama, vLLM, or any OpenAI-compatible API endpoint.
+- 🤖 **Universal OpenAI API Support** — works with local LLMs (LM Studio, Ollama) as well as the official **OpenAI API** (GPT-4o, GPT-4o-mini).
 - 🛡️ **Anti-Spam & Rate Limits** — built-in cooldowns prevent spamming chat messages.
+
+---
+
+## ⚡ Quickstart
+
+Run directly in Windows PowerShell (no installation required):
+
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass
+.\maokAI.ps1
+```
+
+---
+
+## ⚙️ Configuration & LLM Providers
+
+All settings can be configured via environment variables before launching `maokAI.ps1`, or edited directly at the top of the script.
+
+| Variable                  | Default                     | Description                                              |
+|---------------------------|-----------------------------|---------------------------------------------------------|
+| `OPENAI_BASE_URL`         | `http://localhost:8080/v1`  | Base URL of the OpenAI-compatible LLM endpoint.         |
+| `OPENAI_API_KEY`          | `lm-studio`                 | API key / Bearer token sent to the LLM endpoint.        |
+| `OPENAI_MODEL`            | `local-model`               | Model ID requested (e.g. `gpt-4o-mini`, `local-model`). |
+| `RIOT_CLIENT_PORT`        | _(unset)_                   | Manual LCU port override (skips auto-discovery).        |
+| `RIOT_CLIENT_AUTH_TOKEN`  | _(unset)_                   | Manual LCU auth token override (skips auto-discovery).  |
+
+### Option A: Local LLM (LM Studio / Ollama / LocalAI)
+*Free, 100% private, and runs locally on your PC!*
+
+```powershell
+$env:OPENAI_BASE_URL="http://localhost:8080/v1"
+$env:OPENAI_API_KEY="lm-studio"
+$env:OPENAI_MODEL="local-model"
+.\maokAI.ps1
+```
+
+### Option B: Official OpenAI API (GPT-4o / GPT-4o-mini)
+*High-intelligence cloud responses directly from OpenAI!*
+
+```powershell
+$env:OPENAI_BASE_URL="https://api.openai.com/v1"
+$env:OPENAI_API_KEY="sk-proj-your-actual-openai-api-key-here"
+$env:OPENAI_MODEL="gpt-4o-mini"
+.\maokAI.ps1
+```
 
 ---
 
@@ -64,7 +109,7 @@ Built 100% natively in **Windows PowerShell** (`maokAI.ps1`) — no Python, `pip
                                          v
 +-----------------------------------------------------------------------------------+
 |                              OPENAI-COMPATIBLE LLM                                |
-|                   (LM Studio / vLLM / Ollama / OpenAI API)                        |
+|        (Local: LM Studio / Ollama  OR  Cloud: Official OpenAI API)                |
 +-----------------------------------------------------------------------------------+
 ```
 
@@ -91,31 +136,6 @@ The internal LCU API uses HTTP Basic Auth with fixed username `riot` and the pas
 
 ### 4. Chat Interception & Injection
 Using these extracted credentials, `maokAI.ps1` polls `GET /chat/v6/messages`, passes incoming messages to an OpenAI-compatible LLM endpoint, and POSTs the AI response back to `POST /chat/v6/messages` — interacting with League chat as if typed by the player.
-
----
-
-## ⚡ Quickstart
-
-Run directly in Windows PowerShell (no installation required):
-
-```powershell
-Set-ExecutionPolicy -Scope Process Bypass
-.\maokAI.ps1
-```
-
----
-
-## ⚙️ Configuration
-
-All configuration is via environment variables or directly at the top of `maokAI.ps1`.
-
-| Variable                  | Default                     | Description                                              |
-|---------------------------|-----------------------------|---------------------------------------------------------|
-| `OPENAI_BASE_URL`         | `http://localhost:8080/v1`  | Base URL of the OpenAI-compatible LLM endpoint.         |
-| `OPENAI_API_KEY`          | `lm-studio`                 | Bearer token sent to the LLM.                           |
-| `OPENAI_MODEL`            | `local-model`               | Model name passed in the completion request.            |
-| `RIOT_CLIENT_PORT`        | _(unset)_                   | Manual LCU port override (skips auto-discovery).        |
-| `RIOT_CLIENT_AUTH_TOKEN`  | _(unset)_                   | Manual LCU auth token override (skips auto-discovery).  |
 
 ---
 
