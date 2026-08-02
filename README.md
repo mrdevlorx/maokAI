@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/mascot.jpg" alt="maok A.I. Mascot" width="320" style="border-radius: 12px;" />
+</p>
+
 # maok A.I.
 
 > ⚠️ **DISCLAIMER & TOS NOTICE:** This bot relies exclusively on Riot's own internal client APIs (LCU API). However, automated chat interaction may violate Riot Games' Terms of Service (ToS). Use strictly at your own risk — the author assumes no responsibility for any banned or restricted accounts.
@@ -99,6 +103,8 @@ All configuration is via environment variables or directly at the top of `maokAI
 
 ```
 maokAI/
+├── assets/
+│   └── mascot.jpg      # maok A.I. Mascot Logo
 ├── maokAI.ps1          # PowerShell bot script
 ├── .gitignore          # Git ignore rules
 ├── LICENSE             # MIT License
