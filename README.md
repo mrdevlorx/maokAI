@@ -8,7 +8,7 @@
 
 Ever wondered what would happen if **Maokai, the Twisted Treant**, took over your League of Legends chat? 🌲
 
-**maok A.I.** connects your local **Riot Client** to any AI model — including **LM Studio, Ollama, vLLM**, or the official **OpenAI API (GPT-4o)**. Whenever your League friends send you a chat message, **maok A.I.** intercepts it in real-time and responds directly as Maokai — wise, ancient, and protective of the forest!
+**maok A.I.** connects your local **Riot Client** to any AI model — including **LM Studio, Ollama, vLLM**, or the official **OpenAI API**. Whenever your League friends send you a chat message, **maok A.I.** intercepts it in real-time and responds directly as Maokai — wise, ancient, and protective of the forest!
 
 Built 100% natively in **Windows PowerShell** (`maokAI.ps1`) — no Python, `pip`, or external package installation required!
 
