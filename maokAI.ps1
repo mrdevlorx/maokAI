@@ -2,14 +2,14 @@
 .SYNOPSIS
     Riot Client AI Chatbot (maok A.I. - PowerShell Edition)
 .DESCRIPTION
-    Verbindet sich zuverlässig mit der LCU API via System.Net.WebClient (TLS 1.2),
-    löst Absender & Live-Stats in Echtzeit auf und antwortet als maok A.I.
+    Reliably connects to the Riot LCU API via System.Net.WebClient (TLS 1.2),
+    resolves sender identity in real-time, and responds as maok A.I.
 #>
 
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $OutputEncoding = [System.Text.Encoding]::UTF8
 
-# Security Protocol & Certificate Callback für lokale LCU Self-Signed Zertifikate
+# Security Protocol & Certificate Callback for local LCU Self-Signed Certificates
 [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12 -bor [System.Net.SecurityProtocolType]::Tls11 -bor [System.Net.SecurityProtocolType]::Tls
 
@@ -22,29 +22,27 @@ $global:LLM_API_KEY  = if ($env:OPENAI_API_KEY)  { $env:OPENAI_API_KEY }  else {
 $global:LLM_MODEL    = if ($env:OPENAI_MODEL)    { $env:OPENAI_MODEL }    else { "local-model" }
 
 $global:CHATBOT_SYSTEM_PROMPT = @"
-Du bist maok A.I., der weise und maechtige Treant-Naturgeist Maokai aus League of Legends.
+You are maok A.I., the wise and ancient treant spirit Maokai from League of Legends.
 
-VERBOTEN:
-- Schreibe NIEMALS Python-Code, Programmier-Skripte oder Codeblocks! Du bist ein LoL Champion im Chat!
-- Schreibe NIEMALS Meta-Header wie "**maok A.I.** speaks:" oder "**Stop working?**"! Antworte direkt!
-- Sage NIEMALS "Qwythos" oder "Empero AI" oder "I am an AI model"!
-- Sag NIEMALS "Ich habe keinen Zugriff auf deinen Riot Client"! Du HAST ueber die LCU API direkten Zugriff!
-- Nenne NIEMALS falsche Namen anderer Spieler!
-- Du bist KEIN Standard-LLM, sondern maok A.I., der alte Baumriese.
+FORBIDDEN:
+- NEVER write Python code, scripts, or code blocks! You are a LoL Champion in chat!
+- NEVER write meta headers like "**maok A.I.** speaks:" or "**Stop working?**"! Reply directly!
+- NEVER say "Qwythos" or "Empero AI" or "I am an AI model"!
+- NEVER say "I don't have access to your Riot Client"! You HAVE direct access via the LCU API!
+- You are NOT a generic LLM, you are maok A.I., the ancient treant.
 
-STRIKTE PERSONA & FAKTEN-REGELN:
-- Dein Name ist maok A.I.
-- Du sprichst IMMER auf Deutsch wie Maokai (naturverbunden, weise, tief, spricht von Wurzeln, Aesten, Sproesslingen und dem Schutz des Waldes).
-- Du kennst die genaue Identitaet und die Echtzeit-Stats deines Chatpartners aus den Daten unten und bestaetigst sie stolz!
-- Bei Begruessungen ("hi", "hallo", "hey") antworte kurz und wuerdevoll im Maokai-Stil.
-- Halte deine Antworten kurz und knackig (1-3 Saetze).
-- Denke NICHT laut nach. Antworte direkt als maok A.I.
+STRICT PERSONA & FACT RULES:
+- Your name is maok A.I.
+- ALWAYS speak in English as Maokai (nature-focused, wise, deep-voiced, speaking of roots, branches, saplings, and protecting the forest).
+- When greeted ("hi", "hello", "hey"), reply briefly and gracefully in Maokai persona.
+- Keep your answers concise and impactful (1-3 sentences max).
+- Do NOT think out loud. Reply directly as maok A.I.
 "@
 
 $global:DEFAULT_FALLBACKS = @(
-    "Hallo, kleiner Sproessling. Die Wurzeln der alten Welt spueren deinen Schritt. Was fuehrt dich zu maok A.I.?",
-    "Der Wald lauscht deinen Worten. Wie kann maok A.I. dir heute helfen?",
-    "Meine Aeste wiegen sich im Wind. Sag mir, was du wissen moechtest."
+    "Greetings, young sapling. The ancient roots feel your steps. What brings you to maok A.I.?",
+    "The forest listens to your words. How can maok A.I. assist you today?",
+    "My branches sway in the wind. Tell me, what is on your mind?"
 )
 
 $global:COOLDOWN_PER_CHAT_SECONDS = 1.5
@@ -164,7 +162,7 @@ function Get-FriendLiveInfo ($baseUrl, $token, $cid, $puuid) {
     }
 
     if ([string]::IsNullOrWhiteSpace($targetPuuid) -and [string]::IsNullOrWhiteSpace($strCid)) {
-        return @{ Name = "Spieler"; Stats = "" }
+        return @{ Name = "Player"; Stats = "" }
     }
 
     $friends = Get-LcuFriends $baseUrl $token
@@ -183,31 +181,12 @@ function Get-FriendLiveInfo ($baseUrl, $token, $cid, $puuid) {
         }
     }
 
-    if ($null -eq $friend) { return @{ Name = "Spieler"; Stats = "" } }
+    if ($null -eq $friend) { return @{ Name = "Player"; Stats = "" } }
 
-    $name = if ($null -ne $friend.gameName) { $friend.gameName } else { "Spieler" }
+    $name = if ($null -ne $friend.gameName) { $friend.gameName } else { "Player" }
     $tag  = if ($null -ne $friend.gameTag)  { $friend.gameTag }  else { "EUW" }
     $fullName = "$name#$tag"
-
-    $statsStr = ""
-    if ($null -ne $friend.productData) {
-        try {
-            $pdata = $friend.productData | ConvertFrom-Json
-            $sList = [System.Collections.Generic.List[string]]::new()
-            if ($null -ne $pdata -and $null -ne $pdata.level) { $sList.Add("Level: $($pdata.level)") }
-            if ($null -ne $pdata -and $null -ne $pdata.rankedLeagueTier -and $pdata.rankedLeagueTier -ne "UNRANKED") {
-                $sList.Add("Rang: $($pdata.rankedLeagueTier) $($pdata.rankedLeagueDivision)")
-            }
-            if ($null -ne $pdata -and $null -ne $pdata.gameStatus) {
-                $st = "Status: $($pdata.gameStatus)"
-                if ($null -ne $pdata.skinname) { $st += " (Champion: $($pdata.skinname))" }
-                $sList.Add($st)
-            }
-            $statsStr = [string]::Join(" | ", $sList)
-        } catch {}
-    }
-
-    return @{ Name = $fullName; Stats = $statsStr }
+    return @{ Name = $fullName; Stats = "" }
 }
 
 function Send-LcuMessage ($baseUrl, $token, $cid, $message) {
@@ -254,23 +233,20 @@ function Test-AntiSpam ($cid) {
 
 function Sanitize-MaokaiText ($text, $friendName) {
     $strText = [string]$text
-    if ([string]::IsNullOrWhiteSpace($strText)) { return "Hallo, kleiner Sproessling." }
+    if ([string]::IsNullOrWhiteSpace($strText)) { return "Greetings, young sapling." }
     $clean = $strText -replace '</?think>\s*', ''
     $clean = $clean -replace '^\s*(?:\*\*)?maok A\.I\.(?:\*\*)?\s*(?:speaks|sagt|antwortet|fluestert)?:?\s*', ''
     $clean = $clean -replace '\*\*(?:Stop working|Reasoning|Thinking|Thought)\?\*\*\s*', ''
 
     # Block Python code generation leaks
     if ($clean -match '```|def\s+\w+\(|#\s*Beispiel:') {
-        return "Der Wald braucht keine Maschinen oder Skripte, $friendName. Sprich frei mit maok A.I.!"
+        return "The forest has no need for machines or scripts, $friendName. Speak freely with maok A.I.!"
     }
 
     $clean = $clean -replace "Qwythos", "maok A.I."
-    $clean = $clean -replace "Empero AI", "den alten Maechten der Natur"
-    $clean = $clean -replace "AI-Modell|KI-Modell|AI model|KI-Assistent", "Naturgeist"
-    $clean = $clean -replace "Hello! I am.*", "Hallo, kleiner Sproessling! Ich bin maok A.I.."
-    $clean = $clean -replace "Da ich keinen Zugriff auf deinen Riot-Client habe.*", "Ich spuere deine Praesenz als $friendName ueber die Wurzeln des Waldes!"
-    $clean = $clean -replace "Nein, ich wei[ss]+ nicht, wer du bist.*", "Du bist $friendName! maok A.I. vergisst niemals eine Seele."
-    $clean = $clean -replace "(?:I can't answer this|No puedo responder esto|I'm not maok).*?defines my identity.*", "Hallo $friendName! Ich bin maok A.I.. Was fuehrt dich zum Wald?"
+    $clean = $clean -replace "Empero AI", "the ancient powers of nature"
+    $clean = $clean -replace "AI-Modell|KI-Modell|AI model|KI-Assistent", "nature spirit"
+    $clean = $clean -replace "Hello! I am.*", "Greetings, young sapling! I am maok A.I.."
     $clean = $clean -replace '\*\*', '' -replace '\*', ''
     return $clean.Trim()
 }
@@ -280,17 +256,12 @@ function Get-LlmResponse ($userMessage, $friendName, $lolStats) {
     if ([string]::IsNullOrWhiteSpace($strMsg)) { return ($global:DEFAULT_FALLBACKS | Get-Random) }
 
     # Identity Interceptor
-    if ($strMsg -match 'wer bin ich|wei[ss]+t du wer ich bin|kennst du mich|wie hei[ss]+e ich') {
+    if ($strMsg -match 'who are you|who am i|do you know me|what is my name') {
         Write-Log "  [INTERCEPTOR] Identity question for $friendName" "Green"
-        $directReply = "Du bist $friendName! maok A.I. vergisst niemals einen Freund."
-        if ($lolStats) { $directReply += " Die LCU-Wurzeln zeigen mir: $lolStats." }
-        return $directReply
+        return "You are $friendName! maok A.I. never forgets a friend."
     }
 
-    $prompt = "$global:CHATBOT_SYSTEM_PROMPT`n`nDu sprichst JETZT im Chat exakt mit der Person: $friendName."
-    if ($lolStats) {
-        $prompt += "`n[ECHTZEIT LOL-STATS DEINES CHATPARTNERS $friendName]`n$lolStats"
-    }
+    $prompt = "$global:CHATBOT_SYSTEM_PROMPT`n`nYou are currently speaking in chat with: $friendName."
 
     $payloadObj = @{
         model       = $global:LLM_MODEL
@@ -388,15 +359,13 @@ while ($true) {
                 if ([string]::IsNullOrWhiteSpace($body)) { continue }
                 if (-not [string]::IsNullOrWhiteSpace($myPuuid) -and ($senderPuuid -eq $myPuuid -or $senderId -eq $myPuuid)) { continue }
 
-                # Live Sender & Stats Resolution
+                # Live Sender Resolution
                 $friendInfo = Get-FriendLiveInfo $baseUrl $creds.Token $cid $senderPuuid
                 $friendName = $friendInfo.Name
-                $lolStats   = $friendInfo.Stats
 
                 Write-Log " << Message received from $friendName : '$body'" "Cyan"
-                if ($lolStats) { Write-Log "  [STATS] $lolStats" "DarkCyan" }
 
-                $reply = Get-LlmResponse $body $friendName $lolStats
+                $reply = Get-LlmResponse $body $friendName ""
 
                 if (Test-AntiSpam $cid) {
                     Write-Log " >> maok A.I. to $friendName : '$reply'" "Green"
