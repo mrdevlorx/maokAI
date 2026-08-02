@@ -46,6 +46,30 @@ Built 100% natively in **PowerShell** (`maokAI.ps1`) — no Python, `pip`, or ex
 
 ---
 
+## 🔍 How the LCU Mechanism Works Under the Hood
+
+The Riot Client (`RiotClientUx.exe`) is designed around a client-server architecture: the user interface communicates locally with an internal backend web server via REST and WebSockets.
+
+### 1. Plaintext Credentials (`lockfile`)
+Whenever the Riot Client launches, it opens a local HTTPS server on `127.0.0.1` using a randomly assigned port and authentication password. To allow its own UI components to connect, it writes these credentials in plaintext to a local file called `lockfile` (`%LOCALAPPDATA%\Riot Games\Riot Client\Config\lockfile`):
+
+```text
+Riot Client:12345:54321:aBcDeF123456AuthToken:https
+```
+- **Field 3 (`54321`)**: The dynamic local HTTPS port.
+- **Field 4 (`aBcDeF123456AuthToken`)**: The generated password used for HTTP Basic Authentication.
+
+### 2. Process Argument Fallback
+If the `lockfile` is locked or unavailable, the credentials are also passed as command-line arguments to the `RiotClientUx.exe` process (`--app-port=54321` and `--remoting-auth-token=...`). Any script running under the same user session can query these process arguments.
+
+### 3. Local Authorization & SSL Bypass
+The internal LCU API uses HTTP Basic Auth with fixed username `riot` and the password from the `lockfile` (`Authorization: Basic Base64("riot:<token>")`). Since the server uses a local self-signed SSL certificate, local scripts bypass certificate validation (`ServerCertificateValidationCallback = {$true}`) to communicate over HTTPS/WSS.
+
+### 4. Chat Interception & Injection
+Using these extracted credentials, `maokAI.ps1` polls `GET /chat/v6/messages`, passes incoming messages to an OpenAI-compatible LLM endpoint, and POSTs the AI response back to `POST /chat/v6/messages` — interacting with League chat as if typed by the player.
+
+---
+
 ## Quickstart
 
 Run directly in Windows PowerShell (no setup required):
