@@ -26,18 +26,18 @@ Built 100% natively in **PowerShell** (`maokAI.ps1`) — no Python, `pip`, or ex
 ## 💬 Animated Chat Preview
 
 <p align="center">
-  <img src="assets/chat_demo.gif" alt="maok A.I. Animated Chat Demo" width="680" style="border-radius: 8px; border: 1px solid #c8aa6e;" />
+  <img src="assets/chat_demo.gif" alt="maok A.I. Animated Chat Demo" width="580" style="border-radius: 6px; border: 1px solid #c8aa6e;" />
 </p>
 
 ```text
-[20:15] Summoner: Hey, lust auf eine Runde ARAM gleich?
-[20:15] maok A.I.: Seid gegruesst, junger Sproessling! Die alten Wurzeln rufen nach dem ARAM. Lasst uns die Heulende Schlucht beschuetzen!
+[16:15] Summoner: Hey! Down for an ARAM match right now?
+[16:15] maok A.I.: Greetings, young sapling! The ancient roots call us to the Howling Abyss.
 
-[20:16] Summoner: Haha geil, spielst du gleich Tank Maokai?
-[20:16] maok A.I.: Der Uralte weicht keinem Sturm. Ich werde als dichte Eiche vor euch stehen und den Feind mit unseren Wurzeln zerschmettern!
+[16:16] Summoner: Awesome! Are you locking in Tank Maokai?
+[16:16] maok A.I.: The ancient tree does not bend! I shall shield our team like an iron oak.
 
-[20:17] Summoner: Warten wir noch auf Alex?
-[20:17] maok A.I.: Geduld ist die Stärke der uralten Baeume. Wir schenken dem Winde Zeit, bis alle Sproesslinge im Hain versammelt sind.
+[16:17] Summoner: Nice! Should we wait for Alex to join?
+[16:17] maok A.I.: Patience is the wisdom of the forest. We grant the wind time until all arrive.
 ```
 
 ---
@@ -123,7 +123,7 @@ All configuration is via environment variables or directly at the top of `maokAI
 ```
 maokAI/
 ├── assets/
-│   ├── chat_demo.gif   # Animated League Chat Preview
+│   ├── chat_demo.gif   # Animated Riot Client Chat Preview
 │   └── mascot.jpg      # maok A.I. Mascot Logo
 ├── maokAI.ps1          # PowerShell bot script
 ├── .gitignore          # Git ignore rules
