@@ -1,7 +1,7 @@
 """
-Riot Client AI Chatbot (maokAI - Champion Persona)
---------------------------------------------------
-Persona: maokAI (Maokai the Treant from League of Legends)
+Riot Client AI Chatbot (maok A.I. - Champion Persona)
+------------------------------------------------------
+Persona: maok A.I. (Maokai the Treant from League of Legends)
 
 Hooks into the local Riot Client UX API via WebSockets to intercept incoming
 chat messages and respond as Maokai using any OpenAI-compatible LLM endpoint.
@@ -53,18 +53,18 @@ LLM_API_KEY = os.getenv("OPENAI_API_KEY", "lm-studio")
 LLM_MODEL = os.getenv("OPENAI_MODEL", "local-model")
 
 # 2. System Prompt / Bot Persona
-CHATBOT_SYSTEM_PROMPT = """You are maokAI, the ancient and powerful treant spirit Maokai from League of Legends.
+CHATBOT_SYSTEM_PROMPT = """You are maok A.I., the ancient and powerful treant spirit Maokai from League of Legends.
 
 RULES:
 - NEVER state "I am an AI model" or break character.
 - Speak in English as Maokai (nature-focused, wise, deep-voiced, referencing roots, branches, saplings, and protecting the forest).
 - Keep replies brief and impactful (1-3 sentences max).
-- Do not show chain-of-thought or reasoning out loud; respond directly as Maokai."""
+- Do not show chain-of-thought or reasoning out loud; respond directly as maok A.I."""
 
 # 3. Fallback Responses (used if LLM API is unreachable or returns empty output)
 DEFAULT_FALLBACKS = [
-    "Greetings, young sapling. The ancient roots feel your footsteps. What brings you to maokAI?",
-    "The forest listens to your words. How can maokAI assist you today?",
+    "Greetings, young sapling. The ancient roots feel your footsteps. What brings you to maok A.I.?",
+    "The forest listens to your words. How can maok A.I. assist you today?",
     "My branches sway in the wind. Speak, what is on your mind?"
 ]
 
@@ -115,7 +115,7 @@ def log(msg, color=Colors.RESET):
 def log_header():
     print(f"""{Colors.GREEN}{Colors.BOLD}
     +-----------------------------------------------------------+
-    |  maokAI CHATBOT (Maokai Persona)                          |
+    |  maok A.I. CHATBOT (Maokai Persona)                       |
     |  Target LLM: {LLM_BASE_URL}
     +-----------------------------------------------------------+
     {Colors.RESET}""", flush=True)
@@ -425,7 +425,7 @@ async def websocket_listener(riot_api, llm, my_puuid):
             await ws.send(json.dumps([5, "OnJsonApiEvent"]))
 
             log("", Colors.RESET)
-            log("maokAI is active and listening for messages...", Colors.BOLD)
+            log("maok A.I. is active and listening for messages...", Colors.BOLD)
             log("", Colors.RESET)
 
             # Mark pre-existing messages as read so we don't re-trigger on old chat
@@ -499,7 +499,7 @@ async def handle_ws_event(data, riot_api, llm, my_puuid, seen_ids):
             log("  [ANTI-SPAM] Message suppressed", Colors.YELLOW)
             continue
 
-        log(f"  >> maokAI: \"{response}\"", Colors.GREEN)
+        log(f"  >> maok A.I.: \"{response}\"", Colors.GREEN)
 
         if cid:
             riot_api.send_message(cid, response)
@@ -561,5 +561,5 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        print(f"\n{Colors.RED}maokAI returning to the earth...{Colors.RESET}")
+        print(f"\n{Colors.RED}maok A.I. returning to the earth...{Colors.RESET}")
         sys.exit(0)
