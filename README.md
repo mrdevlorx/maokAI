@@ -2,45 +2,48 @@
   <img src="assets/mascot.jpg" alt="maok A.I. Mascot" width="320" style="border-radius: 12px;" />
 </p>
 
-# maok A.I.
+# maok A.I. 🌳🤖
 
 > ⚠️ **DISCLAIMER & TOS NOTICE:** This bot relies exclusively on Riot's own internal client APIs (LCU API). However, automated chat interaction may violate Riot Games' Terms of Service (ToS). Use strictly at your own risk — the author assumes no responsibility for any banned or restricted accounts.
 
-Lightweight Windows PowerShell script that bridges the **Riot Client (League of Legends)** LCU chat system to any **OpenAI-compatible LLM** endpoint. Listens for incoming chat messages via the local LCU REST API, resolves sender identity, generates an in-character reply via the LLM, and posts it back into the conversation.
+Ever wondered what would happen if **Maokai, the Twisted Treant**, took over your League of Legends chat? 🌲
 
-Built 100% natively in **PowerShell** (`maokAI.ps1`) — no Python, `pip`, or external package installation required.
+**maok A.I.** connects your local **Riot Client** to a local AI model (such as LM Studio, Ollama, or vLLM). Whenever your League friends send you a chat message, **maok A.I.** intercepts it in real-time and responds directly as Maokai — wise, ancient, and protective of the forest!
 
----
-
-## Features
-
-- **Zero External Dependencies** — written purely in Windows PowerShell using native .NET classes (`System.Net.WebClient`).
-- **LCU Auto-Discovery** — reads dynamic HTTPS port and auth token from `lockfile`, `scope_v3.json`, or running `RiotClientUx.exe` process args.
-- **Sender Identity Resolution** — looks up friend name and tag in real-time.
-- **OpenAI API Standard** — talks to any server exposing `/v1/chat/completions` (LM Studio, vLLM, Ollama, OpenAI, etc.).
-- **Persona Enforcement** — system prompt keeps replies concise and in character (maok A.I.).
-- **Anti-Spam Controls** — per-chat cooldown + 15 messages / 10 s global cap.
+Built 100% natively in **Windows PowerShell** (`maokAI.ps1`) — no Python, `pip`, or external package installation required!
 
 ---
 
-## 💬 Example Chat Conversation
+## 🎬 Animated Chat Preview
 
-Here is an example interaction showing how **maok A.I.** responds to a friend in the League of Legends client chat:
+<p align="center">
+  <img src="assets/chat_demo.gif" alt="maok A.I. Animated Chat Demo" width="600" style="border-radius: 8px; border: 1px solid #c8aa6e;" />
+</p>
 
 ```text
-[16:15] Summoner: Hey! Down for an ARAM match right now?
-[16:15] maok A.I.: Greetings, young sapling! The ancient roots call us to the Howling Abyss.
+[16:15] Summoner: Hey man! Down for an ARAM match right now?
+[16:15] maok A.I.: Greetings, young sapling! The ancient roots call us to ARAM.
 
 [16:16] Summoner: Awesome! Are you locking in Tank Maokai?
-[16:16] maok A.I.: The ancient tree does not bend! I shall shield our team like an iron oak.
+[16:16] maok A.I.: The tree does not bend! I shall shield our team like an iron oak.
 
 [16:17] Summoner: Nice! Should we wait for Alex to join?
-[16:17] maok A.I.: Patience is the wisdom of the forest. We grant the wind time until all arrive.
+[16:17] maok A.I.: Patience is wisdom. We grant the wind time until all gather.
 ```
 
 ---
 
-## Architecture
+## 🚀 Features
+
+- 🎮 **Made for League Players** — turns your League client chat into an in-character AI bot for your friends!
+- ⚡ **Zero Setup & Dependencies** — runs natively in Windows PowerShell using built-in Windows .NET features.
+- 🔍 **Automatic Client Detection** — automatically finds your running Riot Client, HTTPS port, and auth credentials.
+- 🤖 **OpenAI API Compatible** — works with LM Studio, Ollama, vLLM, or any OpenAI-compatible API endpoint.
+- 🛡️ **Anti-Spam & Rate Limits** — built-in cooldowns prevent spamming chat messages.
+
+---
+
+## 📐 Architecture
 
 ```
 +-----------------------------------------------------------------------------------+
@@ -91,9 +94,9 @@ Using these extracted credentials, `maokAI.ps1` polls `GET /chat/v6/messages`, p
 
 ---
 
-## Quickstart
+## ⚡ Quickstart
 
-Run directly in Windows PowerShell (no setup required):
+Run directly in Windows PowerShell (no installation required):
 
 ```powershell
 Set-ExecutionPolicy -Scope Process Bypass
@@ -102,7 +105,7 @@ Set-ExecutionPolicy -Scope Process Bypass
 
 ---
 
-## Configuration
+## ⚙️ Configuration
 
 All configuration is via environment variables or directly at the top of `maokAI.ps1`.
 
@@ -116,11 +119,12 @@ All configuration is via environment variables or directly at the top of `maokAI
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 maokAI/
 ├── assets/
+│   ├── chat_demo.gif   # Animated Riot Client Chat Preview
 │   └── mascot.jpg      # maok A.I. Mascot Logo
 ├── maokAI.ps1          # PowerShell bot script
 ├── .gitignore          # Git ignore rules
@@ -130,6 +134,6 @@ maokAI/
 
 ---
 
-## Disclaimer
+## ⚖️ Disclaimer
 
 For educational purposes and local testing only. Use responsibly and in accordance with Riot Games' Terms of Service.
